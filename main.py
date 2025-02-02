@@ -173,9 +173,7 @@ async def main(rcon, logfile, dxc=None):
                 break
 
             if switch_match := re.match(r"""\d\d\/\d\d\/\d\d\d\d - \d\d:\d\d:\d\d: teamfrotress_(\w+)""", line):
-                if switch_match[1] in ["scout", "soldier", "pyro", "heavyweapons", "demoman", "engineer", "medic",
-                                       "sniper",
-                                       "spy"]:
+                if switch_match[1] in ["scout", "soldier", "pyro", "heavyweapons", "demoman", "engineer", "medic", "sniper", "spy"]:
                     curr_class = switch_match[1]
                     logging.info(f"New class: {curr_class}")
                     vibe.killstreak = 0
@@ -195,6 +193,10 @@ async def main(rcon, logfile, dxc=None):
                 if killfeed_match[2] == name:  # we died :(
                     logging.info("Death logged")
                     vibe.death()
+
+            if switch_match := re.match(r"""\d\d\/\d\d\/\d\d\d\d - \d\d:\d\d:\d\d: Failed to load sound \"\)ui/hitsound.wav\"""", line): # damage
+                logging.info("Damage detected from missing audio file")
+                vibe.damage()
 
         if curr_class == "medic" and medic_uber_support and (curr_weapon == 2 or curr_weapon == 3):
             uber_grabbed = uber_percentage_grabber(dxc)
@@ -262,9 +264,9 @@ if __name__ == "__main__":
             RCON_PORT) + " +alias hostport +alias cl_reload_localization_files +net_start +con_timestamp 1 +alias con_timestamp -condebug -conclearlog " + TF2_EXTRA_LAUNCH_OPTIONS)
         import shlex
         try:
-            subprocess.Popen(shlex.split('steam -applaunch 440'+str(added_args)))
+            subprocess.Popen(shlex.split('steam -applaunch 440 -nolauncher'+str(added_args)), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except FileNotFoundError:
-            subprocess.Popen(shlex.split('flatpak run com.valvesoftware.Steam -applaunch 440'+str(added_args)))
+            subprocess.Popen(shlex.split('flatpak run com.valvesoftware.Steam -applaunch 440 -nolauncher'+str(added_args)), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
     print("Wait until TF2 has made it to the main menu, then press enter")

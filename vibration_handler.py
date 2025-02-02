@@ -12,6 +12,7 @@ class VibrationHandler:
         self.last_strength = 0
         self.killstreak = 0  # killstreak tracking
         self.uberstreak = 0
+        self.damagestreak = 0
 
     @property
     def current_strength(self):
@@ -41,6 +42,12 @@ class VibrationHandler:
                (killstreak_coeff * (KILLSTREAK_TIME_MULTIPLIER - 1.0) + 1.0) * \
                (KILL_CRIT_TIME_MULTIPLIER if crit else 1.0)
 
+        self.timed_buzz(strength, time)
+
+    def damage(self):
+        strength = self.damagestreak
+        time = 0.1
+        self.damagestreak += 1
         self.timed_buzz(strength, time)
 
     def uber_milestone(self, uber_percent, last_uber_percent):

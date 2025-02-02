@@ -35,7 +35,7 @@ class LogTail:
 
 def is_kill(line):
     return re.match(
-        """\d\d\/\d\d\/\d\d\d\d - \d\d:\d\d:\d\d: ([^\n]{0,32}) killed ([^\n]{0,32}) with (\w+)(\.|(\. \(crit\)))""",
+        r"""\d\d\/\d\d\/\d\d\d\d - \d\d:\d\d:\d\d: ([^\n]{0,32}) killed ([^\n]{0,32}) with (\w+)(\.|(\. \(crit\)))""",
         line) is not None
 
 
