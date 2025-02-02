@@ -1,3 +1,8 @@
+okay so i think i managed to fix *a bit* of the the linux stuff, though i might have broke something else idk...
+- added the rawstring flag r to the start of some commands containing backslash that weren't playing nice ( thanks to my awesome partner for figuring this one out <3 )
+- made it run the game by calling the steam command directly along with the game id "steam -applaunch 440"
+- added support for flatpak steam by running "flatpak run com.valvesoftware.Steam -applaunch 440" if the first attempt fails
+
 # Team Frotress 2
 
 Controls smart sex toys based on kills, deaths, and uber in Team Fortress 2, using the Intiface Central backbone to connect to hardware
