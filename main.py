@@ -30,7 +30,7 @@ if not os.path.isfile("config.py"):
 medic_uber_support = True
 if platform == 'Linux':
     resolution_raw = \
-        subprocess.Popen('xrandr | grep "\*" | cut -d" " -f4', shell=True, stdout=subprocess.PIPE).communicate()[
+        subprocess.Popen(r'xrandr | grep "\*" | cut -d" " -f4', shell=True, stdout=subprocess.PIPE).communicate()[
             0].split()[
             0].split(b'x')
     resolution = (int(resolution_raw[0].decode('UTF-8')), int(resolution_raw[1].decode('UTF-8')))
@@ -147,7 +147,7 @@ async def main(rcon, logfile, dxc=None):
         try:
             name_response = rcon.execute("name")
             name_response_text = name_response.text
-            name = re.match('"name" = "([^\n]+)" \( def. "unnamed" \)', name_response_text)
+            name = re.match(r'"name" = "([^\n]+)" \( def. "unnamed" \)', name_response_text)
         except UnicodeDecodeError:
             pass
 
@@ -172,7 +172,7 @@ async def main(rcon, logfile, dxc=None):
             if line is None:
                 break
 
-            if switch_match := re.match("""\d\d\/\d\d\/\d\d\d\d - \d\d:\d\d:\d\d: teamfrotress_(\w+)""", line):
+            if switch_match := re.match(r"""\d\d\/\d\d\/\d\d\d\d - \d\d:\d\d:\d\d: teamfrotress_(\w+)""", line):
                 if switch_match[1] in ["scout", "soldier", "pyro", "heavyweapons", "demoman", "engineer", "medic",
                                        "sniper",
                                        "spy"]:
@@ -185,7 +185,7 @@ async def main(rcon, logfile, dxc=None):
                     curr_weapon = int(switch_match[1][-1])
 
             if killfeed_match := re.match(
-                    """\d\d\/\d\d\/\d\d\d\d - \d\d:\d\d:\d\d: ([^\n]{0,32}) killed ([^\n]{0,32}) with (\w+)\. ?(\(crit\))?""",
+                    r"""\d\d\/\d\d\/\d\d\d\d - \d\d:\d\d:\d\d: ([^\n]{0,32}) killed ([^\n]{0,32}) with (\w+)\. ?(\(crit\))?""",
                     line):
 
                 if killfeed_match[1] == name:  # we got a kill
@@ -247,15 +247,25 @@ if __name__ == "__main__":
 
     if platform == "Windows":
         tf2_args = [TF2_GAME_EXECUTABLE]
+
+        added_args = (
+                " -game tf -steam -secure -usercon +developer 1 +alias developer +ip 0.0.0.0 +alias ip +sv_rcon_whitelist_address 127.0.0.1 +alias sv_rcon_whitelist_address +rcon_password " + rcon_password + " +alias rcon_password +hostport " + str(
+            RCON_PORT) + " +alias hostport +alias cl_reload_localization_files +net_start +con_timestamp 1 +alias con_timestamp -condebug -conclearlog " + TF2_EXTRA_LAUNCH_OPTIONS).split()
+        tf2_args.extend(added_args)
+
+        subprocess.Popen(tf2_args)
+
+
     else:
-        tf2_args = ["~/.steam/bin32/steam-runtime/run.sh", TF2_GAME_EXECUTABLE]
+        added_args = (
+                " -game tf -steam -secure -usercon +developer 1 +alias developer +ip 0.0.0.0 +alias ip +sv_rcon_whitelist_address 127.0.0.1 +alias sv_rcon_whitelist_address +rcon_password " + rcon_password + " +alias rcon_password +hostport " + str(
+            RCON_PORT) + " +alias hostport +alias cl_reload_localization_files +net_start +con_timestamp 1 +alias con_timestamp -condebug -conclearlog " + TF2_EXTRA_LAUNCH_OPTIONS)
+        import shlex
+        try:
+            subprocess.Popen(shlex.split('steam -applaunch 440'+str(added_args)))
+        except FileNotFoundError:
+            subprocess.Popen(shlex.split('flatpak run com.valvesoftware.Steam -applaunch 440'+str(added_args)))
 
-    added_args = (
-            " -game tf -steam -secure -usercon +developer 1 +alias developer +ip 0.0.0.0 +alias ip +sv_rcon_whitelist_address 127.0.0.1 +alias sv_rcon_whitelist_address +rcon_password " + rcon_password + " +alias rcon_password +hostport " + str(
-        RCON_PORT) + " +alias hostport +alias cl_reload_localization_files +net_start +con_timestamp 1 +alias con_timestamp -condebug -conclearlog " + TF2_EXTRA_LAUNCH_OPTIONS).split()
-    tf2_args.extend(added_args)
-
-    subprocess.Popen(tf2_args)
 
     print("Wait until TF2 has made it to the main menu, then press enter")
     input()
