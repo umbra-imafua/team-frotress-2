@@ -3,6 +3,12 @@ okay so i think i managed to fix *a bit* of the the linux stuff, though i might 
 - made it run the game by calling the steam command directly along with the game id "steam -applaunch 440"
 - added support for flatpak steam by running "flatpak run com.valvesoftware.Steam -applaunch 440" if the first attempt fails
 
+# OH! ALSO!
+## I think that you can detect hitsounds from the game log by creating a custom hitsound with invalid data (an empty hitsound.wav file), as it gives the error:
+`02/02/2025 - 03:19:52: Failed to load sound ")ui/hitsound.wav", file probably missing from disk/repository`
+this would disable the ingame hitsound unfortunately *buuut* you could also then also play the hitsound yourself from the software but it might have delay issues BUT also like this in theory lets you detect when any sound is played maybe and that could let you detect a lot of stuff idk :3
+
+
 # Team Frotress 2
 
 Controls smart sex toys based on kills, deaths, and uber in Team Fortress 2, using the Intiface Central backbone to connect to hardware
