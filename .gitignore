@@ -244,6 +244,5 @@ rconpass.txt
 
 config.py
 
-# Linux virtualenviroment stuff
-__pycache__
+# Linux virtualenviroment
 virtualenviroment
