@@ -241,5 +241,9 @@ screencap.png
 cropped_screencap.png
 
 rconpass.txt
-virtualenviroment
+
 config.py
+
+# Linux virtualenviroment stuff
+__pycache__
+virtualenviroment
